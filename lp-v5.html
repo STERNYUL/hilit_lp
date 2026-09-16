@@ -207,9 +207,11 @@
     .brand-logo--light { opacity: 0; }
     .site-nav.is-scrolled .brand-logo--dark { opacity: 0; }
     .site-nav.is-scrolled .brand-logo--light { opacity: 1; }
-    .brand-copy { display: grid; gap: .05rem; line-height: 1; }
-    .brand-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; letter-spacing: .045em; }
-    .brand-tagline { display: none; font-size: .58rem; font-weight: 700; letter-spacing: .16em; opacity: .58; white-space: nowrap; }
+    .brand-wordmark { position: relative; flex: 0 0 auto; width: clamp(7rem, 10vw, 8.5rem); aspect-ratio: 364 / 128; }
+    .brand-wordmark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity var(--dur-short) var(--ease-out); }
+    .brand-wordmark--light { opacity: 0; }
+    .site-nav.is-scrolled .brand-wordmark--dark { opacity: 0; }
+    .site-nav.is-scrolled .brand-wordmark--light { opacity: 1; }
     .nav-links { display: none; justify-self: center; align-items: center; gap: var(--space-4); }
     .nav-links a { position: relative; display: inline-flex; align-items: center; min-height: 2.5rem; padding-inline: var(--space-3); color: inherit; font-size: var(--text-xs); font-weight: 700; line-height: 1; letter-spacing: .12em; text-decoration: none; white-space: nowrap; }
     .nav-links a::after { content: ""; position: absolute; inset: auto var(--space-3) .2rem; height: 2px; background: linear-gradient(90deg, #08d9ed, #d7ff00); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-short) var(--ease-out); }
@@ -417,7 +419,6 @@
       .faq summary:hover { color: var(--color-accent); }
     }
     @media (min-width: 40rem) {
-      .brand-tagline { display: block; }
       .tobe { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
       .fit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -481,7 +482,10 @@
           <img class="brand-logo brand-logo--dark" src="assets/hilit-app-logo-black.png" width="256" height="256" alt="">
           <img class="brand-logo brand-logo--light" src="assets/hilit-app-logo-white.png" width="256" height="256" alt="">
         </span>
-        <span class="brand-copy"><span class="brand-name">HILIT</span><span class="brand-tagline">AI PERSONAL VIDEO</span></span>
+        <span class="brand-wordmark" aria-hidden="true">
+          <img class="brand-wordmark--dark" src="assets/hilit-text-logo-white.png" width="364" height="128" alt="">
+          <img class="brand-wordmark--light" src="assets/hilit-text-logo-black.png" width="364" height="128" alt="">
+        </span>
       </a>
       <nav class="nav-links" aria-label="주요 메뉴"><a href="#as-is">고객 시나리오</a><a href="#auto-edit">편집 서비스</a><a href="#my-record">내 기록 공간</a><a href="#pricing">요금</a></nav>
       <a class="nav-action" href="login.html">가입하기</a>
