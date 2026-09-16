@@ -1,29 +1,28 @@
-/* Hallmark · pre-emit critique: P5 H5 E4 S5 R4 V5 · macrostructure: Photographic · H6 full-bleed real video · F5 interactive annotated canvas · nav: N7 Brutal Slab · footer: Ft8 Marquee Scroll · theme: studied-DNA (source: TikTok consumer video-first rhythm, rebuilt in HILIT mint) · contrast: pass (40–41) · slop: pass (42–45) · honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive/mobile: pass (34, 49–57) · icons: pass (30) */
+/* HILiT brand tokens · app-logo cyan → turquoise → lime palette */
 :root {
   color-scheme: light;
   --font-display: "Bricolage Grotesque", "Arial Black", sans-serif;
   --font-body: "Pretendard", "Noto Sans KR", Arial, sans-serif;
-  --color-paper: oklch(97% 0.014 165);
-  --color-paper-2: oklch(93% 0.024 165);
-  --color-paper-3: oklch(89% 0.035 165);
-  --color-ink: oklch(19% 0.018 165);
-  --color-ink-2: oklch(34% 0.018 165);
-  --color-muted: oklch(43% 0.016 165);
-  --color-rule: oklch(76% 0.022 165);
-  --color-dark: oklch(15% 0.018 165);
-  --color-dark-2: oklch(21% 0.022 165);
-  --color-light: oklch(96% 0.014 165);
-  --color-light-muted: oklch(78% 0.018 165);
-  /* 브랜드 원색 — logo/앱-로고.png 픽셀 실측값 */
-  /* [T12 확정] accent는 로고 민트 하나로 유지한다. 영상 위 추적 박스(.candidate-btn·.focus-box)가
-     밝은 화면에서 옅게 보이는 것은 감수한 대가이며, 맥락별로 값을 갈라 쓰지 않는다. */
-  --color-accent: oklch(90% 0.069 166);        /* 민트 #b3edd3 */
-  --color-accent-strong: oklch(83% 0.098 166);
-  --color-accent-soft: oklch(90% 0.069 166 / 0.26);
-  --color-accent-ink: oklch(31% 0.043 58);    /* 잉크 #402a19 — 로고 글자색 */
+  --color-paper: oklch(97% 0.014 210);
+  --color-paper-2: oklch(93% 0.024 210);
+  --color-paper-3: oklch(89% 0.035 210);
+  --color-ink: oklch(18% 0.025 225);
+  --color-ink-2: oklch(33% 0.025 225);
+  --color-muted: oklch(45% 0.022 225);
+  --color-rule: oklch(76% 0.025 210);
+  --color-dark: oklch(13% 0.025 225);
+  --color-dark-2: oklch(20% 0.03 225);
+  --color-light: oklch(97% 0.012 210);
+  --color-light-muted: oklch(80% 0.022 210);
+  /* 앱 로고의 시안→터쿼이즈→라임 그라데이션에서 추출한 브랜드 팔레트. */
+  --color-accent: #08d9ed;
+  --color-accent-strong: #24ecc8;
+  --color-accent-secondary: #d7ff00;
+  --color-accent-soft: rgb(8 217 237 / 0.22);
+  --color-accent-ink: #071418;
   --color-dot: oklch(97% 0.011 112);           /* 땡땡이 #f5f6ee */
   --color-accent-rule: oklch(31% 0.043 58 / 0.16);
-  --color-focus: oklch(46% 0.18 165);
+  --color-focus: #d7ff00;
   --color-error: oklch(52% 0.2 28);
   --color-error-light: oklch(91% 0.045 28);
   --color-success: oklch(66% 0.16 152);
