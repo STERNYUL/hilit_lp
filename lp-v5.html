@@ -194,16 +194,27 @@
           민트 위에 민트가 얹혀 그 글자만 사라진다.
        🔴 대비 실측 — 잉크(#402a19) 위 민트(#b3edd3) 는 9.9:1 이다. 12px 굵은
           글씨에 요구되는 AAA(7:1)를 넘는다. 색을 바꿀 때는 다시 재고 넣는다. */
-    .site-nav { position: fixed; inset: 0 0 auto; z-index: var(--z-nav); background: var(--color-accent); border-block-end: var(--rule) solid var(--color-accent-rule); }
+    .site-nav { position: fixed; inset: 0 0 auto; z-index: var(--z-nav); background: rgb(4 6 6 / .94); color: var(--color-light); box-shadow: 0 1px 0 rgb(255 255 255 / .08); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out); }
+    .site-nav::before { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: linear-gradient(90deg, #08d9ed 0%, #24ecc8 45%, #d7ff00 100%); pointer-events: none; }
+    .site-nav.is-scrolled { background: rgb(255 255 255 / .94); color: var(--color-ink); box-shadow: 0 8px 30px rgb(7 22 18 / .1); }
     .nav-inner { width: min(100%, 87.5rem); min-height: var(--nav-height); margin-inline: auto; padding-inline: var(--page-gutter); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--space-4); }
     /* 🔴 워드마크는 잉크색이다. 막대가 민트가 되면서 로고 카드가 할 일이 없어졌다 —
        배경을 걷고 여백만 남긴다. 카드가 아니라 막대가 민트를 맡는다.
        assets/hilit-wordmark-mint.png 은 쓰지 않는다 — README 가 로고 교체 전 판이라고 적어 둔 파일이다. */
-    .brand { display: inline-flex; align-items: center; min-height: 2.5rem; padding: .4rem .7rem; text-decoration: none; }
-    .brand img { width: var(--brand-size); height: auto; }
+    .brand { display: inline-flex; align-items: center; gap: .65rem; min-height: 2.75rem; color: inherit; text-decoration: none; }
+    .brand-mark { position: relative; flex: 0 0 auto; width: var(--brand-size); aspect-ratio: 1; overflow: hidden; border-radius: .65rem; }
+    .brand-logo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity var(--dur-short) var(--ease-out); }
+    .brand-logo--light { opacity: 0; }
+    .site-nav.is-scrolled .brand-logo--dark { opacity: 0; }
+    .site-nav.is-scrolled .brand-logo--light { opacity: 1; }
+    .brand-copy { display: grid; gap: .05rem; line-height: 1; }
+    .brand-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; letter-spacing: .045em; }
+    .brand-tagline { display: none; font-size: .58rem; font-weight: 700; letter-spacing: .16em; opacity: .58; white-space: nowrap; }
     .nav-links { display: none; justify-self: center; align-items: center; gap: var(--space-4); }
-    .nav-links a { display: inline-flex; align-items: center; min-height: 2.5rem; padding-inline: var(--space-3); color: var(--color-accent-ink); font-size: var(--text-xs); font-weight: 700; line-height: 1; letter-spacing: .12em; text-decoration: none; white-space: nowrap; }
-    .nav-action { justify-self: end; display: inline-flex; align-items: center; min-height: 2.5rem; padding-inline: var(--space-4); border: var(--rule) solid var(--color-accent-ink); background: var(--color-clear); color: var(--color-accent-ink); font-size: var(--text-xs); font-weight: 700; letter-spacing: .08em; text-decoration: none; white-space: nowrap; }
+    .nav-links a { position: relative; display: inline-flex; align-items: center; min-height: 2.5rem; padding-inline: var(--space-3); color: inherit; font-size: var(--text-xs); font-weight: 700; line-height: 1; letter-spacing: .12em; text-decoration: none; white-space: nowrap; }
+    .nav-links a::after { content: ""; position: absolute; inset: auto var(--space-3) .2rem; height: 2px; background: linear-gradient(90deg, #08d9ed, #d7ff00); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-short) var(--ease-out); }
+    .nav-action { justify-self: end; display: inline-flex; align-items: center; min-height: 2.5rem; padding-inline: var(--space-4); border: var(--rule) solid var(--color-light); background: var(--color-light); color: var(--color-dark); font-size: var(--text-xs); font-weight: 700; letter-spacing: .08em; text-decoration: none; white-space: nowrap; transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+    .site-nav.is-scrolled .nav-action { border-color: var(--color-ink); background: var(--color-ink); color: var(--color-light); }
 
     /* ── 점 내비 — 갤러리가 몇 번째인지 알려 준다(이 페이지에서 더한 장치). ── */
     .dots { position: fixed; z-index: var(--z-nav); inset-inline-end: var(--space-4); inset-block-start: 50%; transform: translateY(-50%); display: none; flex-direction: column; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
@@ -399,13 +410,14 @@
       /* 🔴 민트 막대 위에서 민트로 밝히면 글자가 사라진다. 지면의 호버 언어
          (「액센트로 채운다」)를 그대로 뒤집어 잉크로 채운다. 자리는 늘 잡아 두고
          바탕만 나타나게 해서 글자가 밀리지 않는다. */
-      .nav-links a:hover { background: var(--color-accent-ink); color: var(--color-accent); }
+      .nav-links a:hover::after { transform: scaleX(1); }
       .btn:hover { border-color: var(--color-accent); background: var(--color-accent); color: var(--color-accent-ink); }
       .btn-mint:hover { background: var(--color-accent-strong); }
-      .nav-action:hover { background: var(--color-accent-ink); color: var(--color-accent); }
+      .nav-action:hover { transform: translateY(-1px); }
       .faq summary:hover { color: var(--color-accent); }
     }
     @media (min-width: 40rem) {
+      .brand-tagline { display: block; }
       .tobe { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
       .fit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -464,7 +476,13 @@
   <!-- ══ 내비 ═══════════════════════════════════════════════════════ -->
   <header class="site-nav">
     <div class="nav-inner">
-      <a class="brand" href="#top" aria-label="하일릿 홈"><img src="assets/hilit-wordmark.png" width="720" height="228" alt="HILIT"></a>
+      <a class="brand" href="#top" aria-label="HILIT 홈">
+        <span class="brand-mark" aria-hidden="true">
+          <img class="brand-logo brand-logo--dark" src="assets/hilit-app-logo-black.png" width="256" height="256" alt="">
+          <img class="brand-logo brand-logo--light" src="assets/hilit-app-logo-white.png" width="256" height="256" alt="">
+        </span>
+        <span class="brand-copy"><span class="brand-name">HILIT</span><span class="brand-tagline">AI PERSONAL VIDEO</span></span>
+      </a>
       <nav class="nav-links" aria-label="주요 메뉴"><a href="#as-is">고객 시나리오</a><a href="#auto-edit">편집 서비스</a><a href="#my-record">내 기록 공간</a><a href="#pricing">요금</a></nav>
       <a class="nav-action" href="login.html">가입하기</a>
     </div>
@@ -938,6 +956,10 @@
       const footer = document.getElementById('footer');
       const dots = document.querySelector('.dots')?.closest('nav');
       const views = new Map([...document.querySelectorAll('.view')].map((view) => [view.id, view]));
+      const siteNav = document.querySelector('.site-nav');
+      const syncNavTheme = () => siteNav?.classList.toggle('is-scrolled', window.scrollY > 24);
+      syncNavTheme();
+      window.addEventListener('scroll', syncNavTheme, { passive: true });
       if (!gallery || !views.size) return;
 
       const render = () => {

@@ -46,8 +46,8 @@
   --space-section: clamp(5rem, 10vw, 9rem);
   --space-section-wide: clamp(5rem, 11vw, 10rem);
   --page-gutter: clamp(1rem, 4vw, 4rem);
-  --nav-height: 3.5rem;
-  --brand-size: 5.25rem;
+  --nav-height: 4.25rem;
+  --brand-size: 2.75rem;
   --content-max: 86rem;
   --radius-sm: 0.35rem;
   --radius-md: 0.75rem;

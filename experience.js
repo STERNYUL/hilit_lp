@@ -368,3 +368,9 @@ if (navigator.connection?.saveData) {
 if (location.protocol === 'file:') {
   els.detail.textContent = '실제 추적은 start-demo.cmd로 실행하면 바로 사용할 수 있습니다.';
 }
+
+// 히어로에서는 검정 로고, 본문을 읽으면 흰색 로고로 전환해 메뉴 가독성을 높인다.
+const siteNav = document.querySelector('.site-nav');
+const syncNavTheme = () => siteNav.classList.toggle('is-scrolled', window.scrollY > 24);
+syncNavTheme();
+window.addEventListener('scroll', syncNavTheme, { passive: true });
