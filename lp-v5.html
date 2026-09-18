@@ -598,8 +598,11 @@
     <section class="panel" id="as-is" aria-labelledby="as-is-title">
       <!-- 배경 영상 — assets/basketball-arena.mp4. 인물마다 색이 다른 추적 상자를 얹은 판이다.
            경기장 코트 레벨 트래킹샷이다.
-           고정된 자리에서 길게 찍힌 원본처럼 보여서 "20분짜리 영상을 넘겨본다"는
-           시나리오와 맞는다. 생성된 CG 라 실제 인물이 아니다(NF-017 무관). -->
+           고정된 자리에서 길게 찍힌 원본처럼 보여서 "원본을 처음부터 넘겨 가며
+           내 장면을 찾는다"는 시나리오와 맞는다. 생성된 CG 라 실제 인물이 아니다(NF-017 무관).
+           🔺 예전에는 이 자리에 「20분짜리 영상」이라고 적혀 있었다. 원본 길이는 요금제가
+              정하는 값이라 요금제가 바뀌면 같이 틀어진다 — 계획서 T10 이 정한 대로
+              Pain 은 수치 없이 행동으로 쓴다. 숫자를 다시 넣지 않는다. -->
       <video class="bg-video" src="assets/basketball-arena.mp4" poster="assets/basketball-arena-poster.jpg"
              muted loop playsinline preload="none" aria-hidden="true"></video>
       <img class="bg-poster" src="assets/basketball-arena-poster.jpg" alt="" width="1280" height="720" aria-hidden="true">
@@ -726,7 +729,7 @@
             <article class="story-card">
               <p class="micro-label">TEAM</p>
               <h3>팀의 모든 선수가 주인공이 됩니다</h3>
-              <ul><li>개인 하이라이트와 팀 기록</li><li>팀 페이지와 소속감</li><li>분위기 소개와 멤버 모집 콘텐츠</li></ul>
+              <ul><li>운영자가 올린 한 경기 영상에서 멤버별 하이라이트</li><li>승인을 거쳐 팀 페이지와 각자의 계정으로</li><li>분위기 소개와 멤버 모집 콘텐츠</li></ul>
               <a class="btn btn-sm" href="login.html">팀으로 시작하기</a>
             </article>
             <article class="story-card">
@@ -772,10 +775,16 @@
             두었고, 아동이 찍히는 상품이라 FACE_CONSENT·MINOR_SUBJECT 승인이 개시에 선행한다.
             「시작하기」로 바꾸면 그 범위를 넘는다. 지금 href 는 사이트 관례대로 #start 지만
             B2B 는 가입이 아니라 상담이다 — 문의 폼·메일이 정해지면 그쪽으로 바꾼다.
-         🔺 원본 상한이 이 판에서 「1편당 20분」 → 🔴 「최대 10분」으로 좁혀졌다(Pro 칸).
-            다른 지면은 아직 20분으로 말한다 — 패널 1의 "20분짜리 영상을 넘겨본다",
-            패널 「지금 맞추고 있는 것」의 "20분 안팎의 원본". 상한이 10분으로 확정된 것이면
-            그 두 줄과 CT-010 의 maxDurationSec(1200)까지 같이 고쳐야 말이 맞는다. -->
+         🔴 원본 상한 20분 → 「최대 10분」. 20분은 기술 상한이 아니라 요금제가 정한 값이었다 —
+            PRD F1 이 "1회당 20분 상한 (v0.2 요금제 결정)" 으로 적고 있고, 계획서 T10 이
+            "요금제의 회당 20분과 어긋나지 않는다"를 근거로 지면 문구를 20분에 맞췄다.
+            즉 의존 방향은 요금제 → 원본 길이 → 지면 문구다. 요금제가 10분으로 바뀌면
+            파생 문구도 같이 내려와야 한다. 이 판에서 내렸다 — 패널 1의 주석은 수치를
+            빼고 행동으로(T10), 「오직 당신만을」의 리드는 "10분 안팎의 원본"으로.
+            🔺 좁히는 방향이라 과대 주장이 되지 않는다 — 20분을 맞추고 있다면 10분은 포함된다.
+            🔺 PRD F1·AF-10·AC1-6 과 CT-010 maxDurationSec(1200) · CT-001 CHECK 는 아직 20분이다.
+               구현 계약이고 DB 마이그레이션까지 엮여 있어 이 저장소가 정할 사안이 아니다.
+               GRIP §5 후속 작업 7번에 등록했다. 같은 사고가 두 번째다(5번 — PRD VP 의 "40분"). -->
     <section class="panel panel--cards" id="pricing" aria-labelledby="pricing-title">
       <div class="scrim scrim--center" aria-hidden="true"></div>
       <div class="panel-inner panel-inner--center">
@@ -929,7 +938,7 @@
             </details>
             <details>
               <summary>한 경기에서 여러 사람의 영상을 만들 수 있나요?</summary>
-              <p>한 개의 팀 영상에서 인물을 달리 선택해 각자의 개인 하이라이트를 만드는 구조를 목표로 합니다. 동시 처리 수와 제공량은 플랜별 확정 범위에 따라 달라질 수 있습니다.</p>
+              <p>한 개의 팀 영상에서 인물을 달리 선택해 각자의 개인 하이라이트를 만드는 구조를 목표로 합니다. 만들 수 있는 편수는 플랜의 제공량을 따릅니다 — 개인 Pro 월 5편, Max 월 30편, TEAM BASIC 월 16편, TEAM PRO 월 100편. 동시 처리 수는 확정 후 안내합니다.</p>
             </details>
             <details>
               <summary>영상에 다른 사람이 같이 나오는데 괜찮나요?</summary>
@@ -937,7 +946,7 @@
             </details>
             <details>
               <summary>팀에서는 어떻게 사용할 수 있나요?</summary>
-              <p>팀 영상에서 멤버별 기록을 만들고 팀 페이지에 모아 소속감과 팀 분위기를 보여주는 흐름을 구상하고 있습니다. TEAM 플랜별 세부 기능은 확정 후 안내합니다.</p>
+              <p>운영자가 단체 경기 영상 한 개를 올리면 그 안의 멤버별 하이라이트가 만들어지고, 승인을 거쳐 팀 페이지와 각 멤버의 개인 계정으로 전달되는 흐름을 구상하고 있습니다. 제작 편수는 TEAM BASIC 월 16편, TEAM PRO 월 100편입니다. 배포 방식의 세부 기능은 확정 후 안내합니다.</p>
             </details>
             <details>
               <summary>시설에서는 어떤 가치가 있나요?</summary>
@@ -1027,7 +1036,7 @@
       <div class="panel-inner panel-inner--left">
         <div class="anchor anchor--wide">
           <h1 class="p-title" id="try-title"><em>오직 당신만을</em><br>따라가는 영상을 만듭니다.</h1>
-          <p class="p-lede">여러 사람이 함께 나온 영상에서 당신만 골라내는 것이 하는 일입니다.<br>고정된 자리에서 찍은 20분 안팎의 원본을 가장 먼저 맞추고 있습니다.</p>
+          <p class="p-lede">여러 사람이 함께 나온 영상에서 당신만 골라내는 것이 하는 일입니다.<br>고정된 자리에서 찍은 10분 안팎의 원본을 가장 먼저 맞추고 있습니다.</p>
           <div class="cta-row">
             <a class="btn btn-mint btn-lg" href="login.html">가입하기</a>
           </div>
