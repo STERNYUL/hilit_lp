@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>서비스 준비 중 — HILiT</title>
+  <meta name="description" content="HILiT 서비스를 준비하고 있습니다. 이름과 이메일을 남기면 출시 소식을 가장 먼저 알려드립니다.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/hilit-app-icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <!-- ══ 서비스 준비중 ══════════════════════════════════════════════════
+       랜딩에서 서비스 사이트(https://www.hilit.site/)로 보내던 버튼이 모두 여기로 온다(사용자 지시).
+       이름·이메일을 받아 /api/waitlist 가 비공개 Vercel Blob 에 남긴다.
+       🔴 버튼마다 ?from= 을 붙여 두었다 — 어느 버튼으로 들어온 신청인지 명단에 함께 남는다.
+       🔴 동의 문구(수집 항목·목적·보유 기간)를 고치면 api/waitlist.js 의 CONSENT_VERSION 도 올린다. -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: #040606; }
+    body { min-width: 320px; min-height: 100svh; margin: 0; display: flex; flex-direction: column; background: #040606; color: var(--color-light); font-family: var(--font-body); line-height: 1.6; word-break: keep-all; overflow-wrap: break-word; }
+    a { color: var(--color-accent); text-underline-offset: .25em; }
+    :focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+    ::selection { background: var(--color-accent); color: var(--color-accent-ink); }
+    [hidden] { display: none !important; }
+
+    /* ── 위 막대 — 랜딩 내비와 같은 검정 막대 + 시안→라임 선 ─────────────── */
+    .bar { position: sticky; inset-block-start: 0; z-index: var(--z-nav); background: rgb(4 6 6 / .94); box-shadow: 0 1px 0 rgb(255 255 255 / .08); }
+    .bar::after { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: linear-gradient(90deg, #08d9ed 0%, #24ecc8 45%, #d7ff00 100%); }
+    .bar-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); width: min(100%, 87.5rem); min-height: var(--nav-height); margin-inline: auto; padding-inline: var(--page-gutter); }
+    .bar-brand { display: inline-flex; }
+    .bar-brand img { display: block; width: clamp(6rem, 10vw, 7.5rem); height: auto; }
+    .bar-back { display: inline-flex; align-items: center; gap: .5em; min-height: 2.5rem; padding-inline: var(--space-4); border: var(--rule) solid rgb(255 255 255 / .35); color: var(--color-light); font-size: var(--text-xs); font-weight: 700; letter-spacing: .06em; text-decoration: none; white-space: nowrap; }
+    .bar-back::before { content: "\2190"; }
+
+    /* ── 본문 ─────────────────────────────────────────────────────────── */
+    .soon { flex: 1; display: grid; place-items: center; padding: var(--space-7) var(--page-gutter) var(--space-8);
+      background: radial-gradient(60% 45% at 50% 18%, rgb(8 217 237 / .12), transparent 70%); }
+    .soon-inner { display: grid; gap: var(--space-5); width: min(100%, 30rem); text-align: center; }
+    .soon-mark { justify-self: center; width: clamp(4.5rem, 12vw, 6rem); height: auto; border-radius: 18%; box-shadow: 0 1.25rem 3rem rgb(0 0 0 / .55); }
+    .eyebrow { margin: 0; color: var(--color-accent); font-family: var(--font-display); font-size: var(--text-xs); font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 800; line-height: 1.15; letter-spacing: -.035em; }
+    h1 em { color: var(--color-accent); font-style: normal; }
+    .lede { margin: 0; color: var(--color-light-muted); font-size: var(--text-base); }
+
+    /* ── 신청 양식 ───────────────────────────────────────────────────── */
+    .form { display: grid; gap: var(--space-4); margin-block-start: var(--space-2); text-align: start; }
+    .field { display: grid; gap: var(--space-2); }
+    .field label { font-size: var(--text-sm); font-weight: 700; }
+    .field input { width: 100%; min-height: 3.25rem; padding-inline: var(--space-4); border: var(--rule) solid rgb(255 255 255 / .28); border-radius: 0; background: rgb(255 255 255 / .04); color: var(--color-light); font: inherit; font-size: 1rem; }
+    .field input::placeholder { color: oklch(62% 0.018 210); }
+    .field input:focus-visible { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 1px var(--color-accent); }
+    .field input[aria-invalid="true"] { border-color: oklch(70% 0.17 28); }
+    .field-error { margin: 0; color: oklch(78% 0.13 28); font-size: var(--text-xs); font-weight: 600; }
+    /* 사람에게는 보이지 않는 칸 — 자동 입력기만 채운다. */
+    .trap { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+    /* 이용 유형 — 넷 중 하나를 고른다. 고른 칸은 테두리와 바탕으로 표시한다. */
+    .choices { display: grid; gap: var(--space-2); min-width: 0; margin: 0; padding: 0; border: 0; }
+    .choices legend { margin-block-end: var(--space-2); padding: 0; font-size: var(--text-sm); font-weight: 700; }
+    .choice-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
+    .choice { display: flex; align-items: center; gap: var(--space-3); min-height: 3.25rem; padding-inline: var(--space-4); border: var(--rule) solid rgb(255 255 255 / .28); background: rgb(255 255 255 / .04); font-size: var(--text-sm); font-weight: 700; cursor: pointer; }
+    .choice input { flex: none; width: 1.1rem; height: 1.1rem; margin: 0; accent-color: var(--color-accent); }
+    .choice:has(input:checked) { border-color: var(--color-accent); background: rgb(8 217 237 / .1); box-shadow: 0 0 0 1px var(--color-accent); }
+    .choice:has(input:focus-visible) { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+    .choices[aria-invalid="true"] .choice { border-color: oklch(70% 0.17 28); }
+    .consent { display: grid; gap: var(--space-2); padding: var(--space-4); border: var(--rule) solid rgb(255 255 255 / .14); background: rgb(255 255 255 / .03); }
+    .consent-check { display: flex; align-items: flex-start; gap: var(--space-3); font-size: var(--text-sm); font-weight: 700; cursor: pointer; }
+    .consent-check input { flex: none; width: 1.15rem; height: 1.15rem; margin: .2rem 0 0; accent-color: var(--color-accent); }
+    .consent-check strong { color: var(--color-accent); }
+    .consent details { font-size: var(--text-xs); color: var(--color-light-muted); }
+    .consent summary { width: fit-content; margin-inline-start: calc(1.15rem + var(--space-3)); color: var(--color-light-muted); text-decoration: underline; text-underline-offset: .25em; cursor: pointer; }
+    .consent dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-2) var(--space-4); margin: var(--space-3) 0 0; }
+    .consent dt { color: var(--color-light); font-weight: 700; }
+    .consent dd { margin: 0; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 3.75rem; padding-inline: var(--space-6); border: var(--rule) solid var(--color-accent); border-radius: 0; background: linear-gradient(100deg, var(--color-accent), var(--color-accent-strong)); color: var(--color-accent-ink); font: inherit; font-size: var(--text-base); font-weight: 700; letter-spacing: .06em; text-decoration: none; cursor: pointer; }
+    .btn:disabled { opacity: .55; cursor: progress; }
+    @media (hover: hover) and (pointer: fine) {
+      .btn:not(:disabled):hover { background: linear-gradient(100deg, var(--color-accent-strong), var(--color-accent-secondary)); }
+    }
+    .form-status { margin: 0; min-height: 1.5em; color: oklch(78% 0.13 28); font-size: var(--text-sm); font-weight: 600; text-align: center; }
+
+    .done { display: grid; gap: var(--space-3); padding: var(--space-6) var(--space-5); border: var(--rule) solid rgb(8 217 237 / .35); background: rgb(8 217 237 / .07); }
+    .done h2 { margin: 0; font-size: var(--text-lg); font-weight: 800; }
+    .done p { margin: 0; color: var(--color-light-muted); font-size: var(--text-sm); }
+    .done b { color: var(--color-light); }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="bar-inner">
+      <a class="bar-brand" href="/" aria-label="HILiT 랜딩으로"><img src="assets/hilit-text-logo-white.png" width="364" height="128" alt="HILiT"></a>
+      <a class="bar-back" href="/" data-back>돌아가기</a>
+    </div>
+  </header>
+
+  <main class="soon">
+    <div class="soon-inner">
+      <img class="soon-mark" src="assets/hilit-app-logo-black-512.png" width="512" height="512" alt="" aria-hidden="true">
+      <p class="eyebrow">Coming soon</p>
+      <h1>서비스 <em>준비 중</em>입니다</h1>
+      <p class="lede">이름과 이메일을 남겨 주시면<br> 출시 소식을 가장 먼저 알려드릴게요.</p>
+
+      <form class="form" id="waitlist" novalidate>
+        <fieldset class="choices" id="type" aria-describedby="type-error">
+          <legend>이용 유형</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="type" value="personal" required>개인</label>
+            <label class="choice"><input type="radio" name="type" value="team">팀</label>
+            <label class="choice"><input type="radio" name="type" value="facility">시설 사업자</label>
+            <label class="choice"><input type="radio" name="type" value="tournament">대회 주최자</label>
+          </div>
+          <p class="field-error" id="type-error" hidden></p>
+        </fieldset>
+        <div class="field">
+          <label for="name">이름</label>
+          <input id="name" name="name" type="text" autocomplete="name" maxlength="50" required aria-describedby="name-error" placeholder="홍길동">
+          <p class="field-error" id="name-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="email">이메일</label>
+          <input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" required aria-describedby="email-error" placeholder="name@example.com">
+          <p class="field-error" id="email-error" hidden></p>
+        </div>
+        <div class="trap" aria-hidden="true">
+          <label for="website">웹사이트</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="consent">
+          <label class="consent-check">
+            <input id="consent" name="consent" type="checkbox" required aria-describedby="consent-error">
+            <span><strong>[필수]</strong> 개인정보 수집·이용에 동의합니다</span>
+          </label>
+          <details>
+            <summary>자세히 보기</summary>
+            <dl>
+              <dt>수집 항목</dt><dd>이름, 이메일, 이용 유형</dd>
+              <dt>이용 목적</dt><dd>HILiT 서비스 출시 소식 안내</dd>
+              <dt>보유 기간</dt><dd>출시 안내를 보낸 뒤 지체 없이 파기합니다. 안내 전이라도 수집일로부터 1년이 지나면 파기합니다.</dd>
+              <dt>동의 거부</dt><dd>동의하지 않을 수 있습니다. 다만 이 경우 출시 알림을 받을 수 없습니다.</dd>
+            </dl>
+          </details>
+          <p class="field-error" id="consent-error" hidden></p>
+        </div>
+
+        <button class="btn" type="submit">출시 알림 받기</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="done" id="done" tabindex="-1" hidden>
+        <h2>신청이 완료되었습니다</h2>
+        <p><b id="done-email"></b>(으)로<br> 출시 소식을 가장 먼저 보내드릴게요.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      // [돌아가기] — 랜딩에서 눌러 들어왔으면 누르기 전 자리로 돌아간다.
+      // 주소로 바로 들어왔으면 돌아갈 곳이 사이트 밖이라 랜딩 첫 화면으로 보낸다.
+      document.querySelector('[data-back]')?.addEventListener('click', (event) => {
+        let sameSite = false;
+        try { sameSite = new URL(document.referrer).origin === location.origin; } catch {}
+        if (!sameSite || history.length < 2) return;
+        event.preventDefault();
+        history.back();
+      });
+
+      const form = document.getElementById('waitlist');
+      const status = document.getElementById('form-status');
+      const submit = form.querySelector('button[type="submit"]');
+      const from = new URLSearchParams(location.search).get('from') || '';
+      const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      // 🔴 form.name 으로 칸을 찾지 않는다 — 폼 자신의 name 속성과 이름이 겹친다.
+      const [nameInput, emailInput, consentInput, trapInput, typeGroup] = ['name', 'email', 'consent', 'website', 'type'].map((id) => document.getElementById(id));
+      const typeInputs = [...form.querySelectorAll('input[name="type"]')];
+      const checkedType = () => typeInputs.find((input) => input.checked)?.value || '';
+
+      // 대상이 분명한 버튼(고객 사례의 팀·시설 문의)으로 들어왔으면 그 유형을 미리 골라 둔다.
+      // 🔴 「무료로 시작하기」「가입하기」는 개인으로 정하지 않는다 — 팀 대표가 누르기도 한다.
+      //    「내 팀, 시설 페이지 만들기」의 [문의하기](venue-inquiry)도 팀·시설·대회 중 어느 쪽인지 몰라 비워 둔다.
+      const PRESET = { 'case-team': 'team', 'case-facility': 'facility' };
+      const preset = typeInputs.find((input) => input.value === PRESET[from]);
+      if (preset) preset.checked = true;
+
+      const setError = (input, message) => {
+        const box = document.getElementById(`${input.id}-error`);
+        input.setAttribute('aria-invalid', message ? 'true' : 'false');
+        box.textContent = message;
+        box.hidden = !message;
+      };
+
+      const validate = () => {
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const checks = [
+          [typeGroup, checkedType() ? '' : '이용 유형을 선택해 주세요.'],
+          [nameInput, name ? '' : '이름을 입력해 주세요.'],
+          [emailInput, !email ? '이메일을 입력해 주세요.' : EMAIL.test(email) ? '' : '이메일 형식을 확인해 주세요.'],
+          [consentInput, consentInput.checked ? '' : '개인정보 수집·이용에 동의해 주세요.'],
+        ];
+        checks.forEach(([input, message]) => setError(input, message));
+        const first = checks.find(([, message]) => message);
+        // 유형 칸은 묶음이라 포커스를 받지 못한다 — 첫 선택지로 보낸다.
+        const target = first?.[0] === typeGroup ? typeInputs[0] : first?.[0];
+        target?.focus();
+        return !first;
+      };
+
+      // 한 번 틀린 칸은 고치는 즉시 안내를 지운다.
+      form.addEventListener('input', (event) => {
+        const input = event.target.name === 'type' ? typeGroup : event.target;
+        if (input.getAttribute('aria-invalid') === 'true') setError(input, '');
+      });
+
+      const MESSAGES = {
+        invalid_name: '이름을 확인해 주세요.',
+        invalid_email: '이메일 형식을 확인해 주세요.',
+        consent_required: '개인정보 수집·이용에 동의해 주세요.',
+        invalid_type: '이용 유형을 선택해 주세요.',
+      };
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = '';
+        if (!validate()) return;
+
+        submit.disabled = true;
+        submit.textContent = '보내는 중…';
+        try {
+          const response = await fetch('/api/waitlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: nameInput.value.trim(),
+              email: emailInput.value.trim(),
+              type: checkedType(),
+              consent: consentInput.checked,
+              website: trapInput.value,
+              from,
+            }),
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || !result.ok) throw new Error(result.error || 'unknown');
+
+          document.getElementById('done-email').textContent = emailInput.value.trim();
+          form.hidden = true;
+          const done = document.getElementById('done');
+          done.hidden = false;
+          done.focus();
+        } catch (error) {
+          status.textContent = MESSAGES[error.message] || '잠시 후 다시 시도해 주세요. 문제가 계속되면 support@hilit.site 로 알려주세요.';
+          submit.disabled = false;
+          submit.textContent = '출시 알림 받기';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
